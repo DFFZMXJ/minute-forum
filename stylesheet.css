@@ -1,0 +1,511 @@
+/*This is the stylesheet of forum*/
+*{
+	margin:0;
+	padding:0;
+	box-sizing:border-box;
+}
+::selection{
+	background-color: #b3d4fc;
+	text-shadow:none;
+  }
+/*Default fonts*/
+:not(pre):not(code){
+	font-family:Roboto,sans-serif,Arial,"Microsoft YaHei";
+}
+pre,code{
+	font-family:monospace,Moncao,Consolas,Curier,sans-serif,Arial,"Microsoft YaHei";
+}
+body{
+	padding-top:50px;
+	background:rgb(233,233,233);
+}
+a:not([non-link-style]){
+	text-decoration:none;
+	color:#18FFFF;
+	font-weight:600;
+}
+.container{
+	position:relative;
+	width:85%;
+	left:50%;
+	max-width: 1024px;
+	transform:translate(-50%,0);
+}
+.nav{
+	position:fixed;
+	top:0;
+	height:56px;
+	width:100%;
+	line-height:56px;
+	border-bottom:1px solid gray;
+	box-shadow:0 2px 5px rgba(0,0,0,.26);
+	background:rgb(66, 133, 244);
+	z-index:2;
+}
+.nav .nav-container{
+	padding-left:24px;
+	padding-right:24px;
+}
+.nav .brand{
+	font-size:20px;
+	font-weight:500;
+	float:left;
+	color:white;
+	text-decoration:none;
+}
+.nav .user{
+	position:relative;
+	right:0;
+	height:56px;
+	line-height:56px;
+	float:right;
+	color:white;
+}
+.username{
+	color:#9239AA;
+	text-decoration:none;
+}
+.ui-row{
+	z-index:1;
+	margin-top:25px;
+}
+.ui-row .ui-content{
+	width:74%;
+	min-height:100px;
+	float:left;
+	transition:height .3s ease;
+	background:white;
+}
+.ui-row .ui-right{
+	width:24%;
+	float:right;
+	padding:10px;
+	transition:height .3s ease;
+	background:white;
+}
+.box-shadow{
+	box-shadow:0 2px 2px -2px rgba(0,0,0,.2), 0 1px 2px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+	border-radius:2px;
+}
+.subheader{
+	display:block;
+	height:40px;
+	line-height:40px;
+	padding-left:20px;
+	width:100%;
+	font-size:14px;
+	color:rgba(0,0,0,.56);
+	border-bottom:1px solid rgba(0,0,0,.13);
+}
+.post-list{
+	list-style:none;
+}
+.post-list:empty::after{
+	display:block;
+	height:200px;
+	line-height:200px;
+	width:100%;
+	font-size:15px;
+	color:rgba(0,0,0,.54);
+	content:'Nothing here.';
+	text-align:center;
+}
+.post-list li{
+	height:72px;
+	cursor:pointer;
+	transition:background .325s ease;
+	padding:16px;
+	border-bottom:1px solid rgba(0,0,0,.13);
+}
+.post-list li:hover{
+	background:rgba(0,0,0,.13);
+}
+.post-list li .sideheader{
+	color:rgba(0,0,0,.54);
+	float:right;
+	font-size:13px;
+	height:20px;
+	line-height:20px;
+}
+.post-list li .info{
+	float:left;
+	height:36px;
+	line-height: 20px;
+}
+.post-list li .info .title{
+	font-size:16px;
+	color:rgba(0,0,0,.87);
+}
+.post-list li .info .info-text{
+	line-height:18px;
+	font-size:14px;
+	color:rgba(0,0,0,.56);
+}
+.central-card{
+	position:absolute;
+	height:600px;
+	width:50vw;
+	max-width:600px;
+	background:white;
+	left:50%;
+	top:50%;
+	transform:translate(-50%,-50%);
+}
+.central-card .card-title{
+	height:100px;
+	line-height:100px;
+	padding-left:20px;
+	font-size:40px;
+}
+.central-card .card-content{
+	padding:15px;
+	height:500px;
+}
+.transparent{
+	background:transparent;
+}
+.post{
+	background:white;
+}
+.post-header{
+	height:100px;
+	border-bottom:1px solid rgba(0,0,0,.26);
+	padding-left:30px;
+}
+.post-header .post-title{
+	height:60px;
+	line-height:60px;
+	font-size:26px;
+}
+.post-header .post-subheader{
+	height:40px;
+	line-height:40px;
+	font-size:14px;
+	color:rgba(0,0,0,.56);
+}
+.post-content{
+	padding:20px;
+	border-bottom:1px solid rgba(0,0,0,.26);
+}
+.post-control{
+	height:40px;
+	line-height:40px;
+	padding-left:20px;
+	font-size:15px;
+}
+.reply{
+	margin-top:20px;
+}
+.reply .reply-header{
+	padding-left:20px;
+	padding-right:20px;
+	height:50px;
+	border-bottom:1px solid rgba(0,0,0,.26);
+}
+.reply .reply-header .reply-username{
+	height:30px;
+	line-height:30px;
+	font-size:15px;
+	font-weight:600;
+}
+.reply .reply-header .reply-addition{
+	height:20px;
+	line-height:20px;
+	font-size:13px;
+	color:rgba(0,0,0,.56);
+}
+.reply .reply-header .reply-floor{
+	margin-top:-45px;
+	color:rgba(0,0,0,.56);
+	float:right;
+	font-size:13px;
+	height:20px;
+	line-height:20px;
+}
+.reply .reply-content{
+	padding:10px;
+	border-bottom:1px solid rgba(0,0,0,.26);
+}
+.reply .reply-control{
+	height:40px;
+	line-height:40px;
+	padding-left:20px;
+	font-size:15px;
+}
+.typo{
+	line-height:26px;
+	font-size:15px;
+	color:rgba(0,0,0,.87);
+}
+.typo code{
+	background:rgba(256,0,0,.23);
+	color:#f44336;
+	font-size:14px;
+	padding:2px;
+	border-radius:2px;
+}
+.typo pre{
+	padding:10px;
+	border-radius:2px;
+	font-size:14px;
+	line-height:18px;
+	border:1px solid rgba(0,0,0,.4);
+	margin-top:10px;
+	margin-bottom:10px;
+	overflow-x:auto;
+}
+.typo pre code{
+	background:transparent;
+	color:black;
+}
+.textfield{
+	height:40px;
+	line-height:40px;
+	font-size:15px;
+	color:rgba(0,0,0,.87);
+	width:100%;
+	background:transparent;
+	outline:none;
+	border:none;
+	border-bottom:2px solid grey;
+	transition:all .2s ease;
+}
+.textfield:focus{
+	border-bottom:2px solid #18FFFF;
+}
+.textfield:disabled{
+	border-bottom:2px solid #AFAFAF;
+	color:#AFAFAF;
+}
+.btn{
+	min-width:88px;
+	background:transparent;
+	outline:none;
+	border:none;
+	height:36px;
+	padding-left:8px;
+	padding-right:8px;
+	line-height:16px;
+	font-size:14px;
+	border-radius:2px;
+	cursor:pointer;
+	text-transform:uppercase;
+	font-weight:600;
+	transition:all .325s ease;
+	margin:10px;
+	color:#18FFFF;
+}
+.btn:hover{
+	background:rgb(226, 226, 226);
+}
+.btn:active{
+	background:rgba(153,153,153,.4);
+}
+.btn:disabled{
+	color:rgba(0,0,0,.26);
+}
+.user-vip{
+	color:#f44336!important;
+	font-weight:700!important;
+}
+.user-info{
+	max-width:768px;
+	min-height:200px;
+	background:white;
+}
+.user-info .user-basic-info{
+	width:100%;
+	height:50vh;
+	background:url("assets/img/meiko_honma.jpg");
+	background-size:cover;
+}
+.username__primary-info{
+	position: relative;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	padding: 24px 16px 16px;
+	color: #000;
+}
+.username__primary-info .primary-info__username{
+	margin-left: 10px;
+	font-size:30px;
+	display: block;
+	line-height: 36px;
+	opacity: 1;
+}
+.username__primary-info .primary-info__details{
+	position: relative;
+	opacity: 1;
+	line-height: 24px;
+	font-size: 14px;
+	color: rgba(0,0,0,.54);
+	margin-left: 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.post-submit-btn{
+	text-transform:uppercase;
+	width:100%;
+	height:50px;
+	border:none;
+	border-radius:2px;
+	outline:none;
+	background:#18FFFF;
+	line-height:16px;
+	font-size:14px;
+	border-radius:2px;
+	cursor:pointer;
+	text-transform:uppercase;
+	font-weight:600;
+	transition:all .325s ease;
+	color:white;
+}
+#hidden-user-card-validate{
+	display:none;
+}
+.bottom-dialog{
+	transition:all .325s ease-in-out;
+	position:fixed;
+	left:50%;
+	top:100%;
+	transform:translate(-50%,0);
+	width:100%;
+	max-width:768px;
+	background:white;
+	z-index:3;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.bottom-dialog.expand{
+	transform:translate(-50%,-100%);
+}
+.bottom-dialog.expand-half:not(.expand){
+	transform:translate(-50%,-56px);
+}
+.bottom-dialog .dialog-primary{
+	height:56px;
+	padding:10px;
+	padding-left:20px;
+	border-bottom:1px solid rgba(0,0,0,.26);
+}
+#post-title{
+	float:left;
+	width:calc(100% - 48px);
+}
+.btn-icon{
+	height:48px;
+	width:48px;
+	line-height:48px;
+	text-align:center;
+	border:none;
+	outline:none;
+	background:none;
+	border-radius:50%;
+	cursor:pointer;
+	overflow:hidden;
+	font-size:24px;
+}
+.btn-icon:hover{
+	background:rgba(153,153,153,.27);
+}
+.btn-icon:active{
+	background:rgba(153,153,153,.4);
+}
+#dialog-close{
+	float:right;
+	transform:translate(3px,-3px);
+	transform: rotate(45deg);
+	transition:transform .3s ease;
+}
+.bottom-dialog.expand-half:not(.expand) #dialog-close{
+	transform:rotate(0deg);
+}
+.dialog-content{
+	border-bottom:1px solid rgba(0,0,0,.26);
+	padding:20px;
+}
+.beauty-textarea{
+	border:2px solid grey;
+	width:100%;
+	min-height:200px;
+	line-height:20px;
+	font-size:15px;
+	padding:10px;
+	outline:none;
+	transition:all .3s ease;
+}
+.beauty-textarea:focus{
+	border-color:#18FFFF;
+}
+.error:not(:empty){
+	color:#f44336;
+	font-size:14px;
+	padding-left:10px;
+	padding-right:10px;
+	height:40px;
+	line-height:40px;
+}
+.replies{
+	display:block;
+	width:100%;
+}
+.replies:empty::after{
+	display:block;
+	height:200px;
+	line-height:200px;
+	content:'No replies.';
+	text-align:center;
+	width:100%;
+	font-size:15px;
+	color:rgba(0,0,0,.54);
+}
+.fab{
+	height:56px;
+	width:56px;
+	border:none;
+	border-radius:50%;
+	background:#18FFFF;
+	position:fixed;
+	bottom:24px;
+	right:24px;
+	cursor:pointer;
+	outline:none;
+	font-size:24px;
+	transition:all .225s ease;
+	z-index:2;
+	box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+}
+.fab:hover{
+	box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+.fab:active{
+	box-shadow: 0 7px 8px -4px rgba(0, 0, 0, 0.2), 0 12px 17px 2px rgba(0, 0, 0, 0.14), 0 5px 22px 4px rgba(0, 0, 0, 0.12);
+}
+/*Below code will support for responsive web design.*/
+@media screen and (max-width:600px){
+	.container{
+		width:100%;
+	}
+	.ui-row .ui-content{
+		width:100%;
+	}
+	.ui-row .ui-right{
+		display:none;
+	}
+	.fab{
+		bottom:16px;
+		right:16px;
+	}
+	.central-card{
+		width:100vw;
+		height:100vh;
+	}
+	.nav .nav-container{
+		padding-left: 16px;
+		padding-right: 16px;
+	}
+	.post-header,.post-header .post-title{
+		height:auto;
+	}
+}
