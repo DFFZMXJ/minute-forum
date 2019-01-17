@@ -56,6 +56,7 @@
 					if (xhr.status != 200) document.querySelector("#sign-in-error").innerHTML = JSON.parse(xhr.responseText).message;
 					else {
 						document.querySelector("#sign-in-error").innerHTML = "";
+						debugger;
 						window.location.href = "./";
 					}
 				}
@@ -80,6 +81,7 @@
 				complete: xhr => {
 					if (xhr.status < 300 && xhr.status > 199) {
 						document.getElementById("sign-up-error").innerHTML = "";
+						debugger;
 						window.location.href = "./";
 					} else document.getElementById("sign-up-error").innerHTML = JSON.parse(xhr.responseText).message;
 				}
@@ -131,7 +133,7 @@
 					/*Create a reply box*/
 					var replyBox = document.createElement("div");
 					replyBox.setAttribute("class", "post reply box-shadow");
-					replyBox.setAttribute("id", "reply-" + data.floor);
+					replyBox.setAttribute("id", "reply-" + data.data.floor);
 					var replyBoxHeader = document.createElement("div");
 					replyBoxHeader.setAttribute("class", "reply-header");
 					var replyBoxHeaderUsername = document.createElement("div");
@@ -146,15 +148,15 @@
 					})();
 					var replyBoxHeaderFloor = document.createElement("div");
 					replyBoxHeaderFloor.setAttribute("class", "reply-floor");
-					replyBoxHeaderFloor.innerHTML = "Reply #" + data.floor;
+					replyBoxHeaderFloor.innerHTML = "Reply #" + data.data.floor;
 					var replyBoxContent = document.createElement("div");
 					replyBoxContent.setAttribute("class", "reply-content typo");
-					replyBoxContent.innerHTML = data.content;
+					replyBoxContent.innerHTML = data.data.content;
 					var replyBoxContentMentioned = document.createElement("a");
-					if (data.repliedTo) {
-						if (data.repliedTo.vip) replyBoxContentMentioned.setAttribute("class", "user-vip");
+					if (data.data.repliedTo) {
+						if (data.data.repliedTo.vip) replyBoxContentMentioned.setAttribute("class", "user-vip");
 						replyBoxContentMentioned.setAttribute("href", "#reply-" + window["\\Post-Editor"].repliedTo.floor);
-						replyBoxContentMentioned.innerHTML = "@" + data.repliedTo.username + "#" + window["\\Post-Editor"].repliedTo.floor;
+						replyBoxContentMentioned.innerHTML = "@" + data.data.repliedTo.username + "#" + window["\\Post-Editor"].repliedTo.floor;
 					}
 					var replyBoxControl = document.createElement("div");
 					replyBoxControl.setAttribute("class", "reply-control");
@@ -163,15 +165,15 @@
 					replyBoxControlLike.setAttribute("class", "post-like");
 					replyBoxControlLike.setAttribute("data-like", JSON.stringify({
 						type: 'reply',
-						id: data.id,
+						id: data.data.id,
 						liked: false
 					}));
 					replyBoxControlLike.addEventListener("click", window._like);
 					replyBoxControlLike.innerHTML = "Like";
 					var replyBoxControlReply = document.createElement("a");
 					replyBoxControlReply.setAttribute("href", "javascript:reply('reply'," + JSON.stringify([
-						data.id,
-						data.floor,
+						data.data.id,
+						data.data.floor,
 						window['\\UserLoginState'].userid
 					]) + ")");
 					replyBoxControlReply.innerHTML = "Reply";
@@ -180,7 +182,7 @@
 					replyBoxHeader.appendChild(replyBoxHeaderAddition);
 					replyBoxHeader.appendChild(replyBoxHeaderFloor);
 					replyBox.appendChild(replyBoxHeader);
-					if (data.repliedTo) replyBoxContent.insertBefore(replyBoxContentMentioned,replyBoxContent.childNodes[0]);
+					if (data.data.repliedTo) replyBoxContent.insertBefore(replyBoxContentMentioned,replyBoxContent.childNodes[0]);
 					replyBox.appendChild(replyBoxContent);
 					replyBoxControl.innerHTML=" · ";
 					replyBoxControl.insertBefore(replyBoxControlLike,replyBoxControl.childNodes[0]);
@@ -212,16 +214,19 @@
 				switch (xhr.status) {
 					case 201:
 					case 200:
-						if (r.post) window.location.href = `view.php?post=${r.post}`;
+						if (r.data.post)
+							window.location.href = `view.php?post=${r.data.post}`;
+						else
+							window["\\Post-Editor"].error.innerHTML = `Unknown error, message: ${r.message}`;
 						break;
 					case 401:
 						window.location.href = "auth.php";
 						break;
 					case 406:
-						window["\\Post-Editor"].error = r.message;
+						window["\\Post-Editor"].error.innerHTML = r.message;
 						break;
 					default:
-						window["\\Post-Editor"].error = `Unknown error, message: ${r.message}`;
+						window["\\Post-Editor"].error.innerHTML = `Unknown error, message: ${r.message}`;
 				}
 			}
 		});
@@ -260,9 +265,9 @@
 				/*When received*/
 				if (xhr.status == 200) {
 					let data = JSON.parse(xhr.responseText);
-					let button = document.querySelector(`[data-like="${data.fullStr.replace(/\"/g, "\\\"")}"]`);
-					button.innerHTML = data.liked ? 'Unlike' : 'Like';
-					button.setAttribute("data-like", data.fullStr);
+					let button = document.querySelector(`[data-like="${data.data.fullString.replace(/\"/g, "\\\"")}"]`);
+					button.innerHTML = data.data.liked ? 'Unlike' : 'Like';
+					button.setAttribute("data-like", data.data.fullString);
 				} else {
 					alert(`Network error! Please try again later!
 Status: ${xhr.status}

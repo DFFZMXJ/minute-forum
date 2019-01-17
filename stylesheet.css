@@ -143,7 +143,6 @@ a:not([non-link-style]){
 }
 .central-card{
 	position:absolute;
-	height:600px;
 	width:50vw;
 	max-width:600px;
 	background:white;
@@ -159,7 +158,6 @@ a:not([non-link-style]){
 }
 .central-card .card-content{
 	padding:15px;
-	height:500px;
 }
 .transparent{
 	background:transparent;
@@ -508,4 +506,21 @@ a:not([non-link-style]){
 	.post-header,.post-header .post-title{
 		height:auto;
 	}
+}
+/*Give IE users a warning*/
+.ie-warning{
+	font-size:14px;
+	background:#323232;
+	color:white;
+	height:48px;
+	position: absolute;
+	left:24px;
+	bottom:24px;
+	line-height:48px;
+	padding:0;
+	border-radius: 2px;
+	min-width:288px;
+	max-width: 568px;
+	padding-left:24px;
+	padding-right:24px;
 }

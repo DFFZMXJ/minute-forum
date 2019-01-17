@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width" />
 		<meta name="page-sign-verified" />
 		<link rel="stylesheet" href="stylesheet.css"/>
-		<title>Sign In - <?php echo $config["sitename"];?></title>
+		<title>Sign In - <?php echo Property::$properties["forum"]['name'];?></title>
 		<style>
 			#sign-up{
 				display:none;
@@ -23,6 +23,10 @@
 			}
 			.card-content{
 				height:auto;
+			}
+			body{
+				height:100vh;
+				background:linear-gradient(to right bottom, #90FF2A,#20ADCA);
 			}
 		</style>
 	</head>

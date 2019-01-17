@@ -1,84 +1,44 @@
 <?php
 /*This file is the base file of forum*/
+//In fact its name should be "initialize.php" but I am lazy to change.
 require "markdown.php";
-$config=[
-	/*Settings of forum*/
-	'sitename'=>'5 Minute Forum',
-	'banner'=>'Sign in with password <code>minute-forum</code> and start talking~'
-];
-class Database{
-	/*JSON database manager*/
-	public static function ls($table){
-		/*List the contents in table*/
-		if(empty($table)) return false;
-		if(!file_exists("storage/".$table.".json")) return false;
-		$tb = fopen("storage/".$table.".json","r");
-		$cache = "";
-		while(!feof($tb)) $cache.=fgets($tb);
-		fclose($tb);
-		return json_decode($cache,true);
+require "sqlite.php";
+/**
+ * Property file manager. Store, change, create and delete data.
+ */
+class Property{
+	public static $property_file = "properties.php";
+	public static $properties = null;
+	public static function read(){
+		return self::$properties=require self::$property_file;
 	}
-	public static function create($table){
-		/*Create new table*/
-		if(empty($table)||file_exists("storage/".$table.".json")) return false;
-		$tb = fopen("storage/".$table.".json","w");
-		fwrite($tb,"[]");
-		fclose($tb);
-		return true;
-	}
-	public static function drop($table){
-		/*Drop a table*/
-		if(empty($table)||!file_exists("storage/".$table.".json")) return false;
-		unlink("storage/".$table.".json");
-		return true;
-	}
-	public static function insert($table,$column){
-		/*Insert new data*/
-		if(empty($table)||empty($column)||!file_exists("storage/".$table.".json")) return false;
-		$tb = Database::ls($table);
-		array_push($tb,$column);
-		$fs = fopen("storage/".$table.".json","w");
-		fwrite($fs,json_encode($tb));
-		fclose($fs);
-		return $column;
-	}
-	public static function update($table,$column,$newcolumn){
-		if(empty($table)||empty($column)||empty($newcolumn)||!file_exists("storage/".$table.".json")) return false;
-		$tb = Database::ls($table);
-		$c = array_search($column,$tb,true);
-		$tb[$c]=$newcolumn;
-		$fs = fopen("storage/".$table.".json","w");
-		fwrite($fs,json_encode($tb));
-		fclose($fs);
-		return true;
-	}
-	public static function select($table,$query,$value){
-		if(empty($table)) return false;
-		$tb = Database::ls($table);
-		if(empty($query)&&empty($value)) return $tb;
-		$selections = [];
-		for($i = 0; $i < count($tb); $i++) if($tb[$i][$query]===$value) array_push($selections,$tb[$i]);
-		return count($selections)?$selections:null;
-	}
-	public static function delete($table,$query,$value){
-		/*Delete all selected collections. (Unsupported for now)*/
+	public static function save($property=null){
+		if(empty($property))
+			if(empty(self::$properties))
+				return false;
+			else
+				$property = self::$properties;
+		return file_put_contents(self::$property_file,'<?php '.PHP_EOL.'return '.var_export($property,true).';');
 	}
 }
+if(empty($__DONT_REQUIRE_PROPERTIES__)) Property::read();
+//error_reporting(E_ALL ^ E_WARNING);//Disable warnings.
+if(empty($__DONT_LAUNCH_DATABASE__)) Database::launch(Property::$properties['database']['location']);
 class User{
 	public static function logged(){
+		//Check login status
 		if(empty($_COOKIE['m_token'])) return false;
-		$us = Database::select('users','token',$_COOKIE['m_token']);
-		return $us?$us[0]:false;
+		return Database::query((new SQL)->select('*')->from('users')->where('token=',SQLite3::escapeString($_COOKIE['m_token']))->getSql());
 	}
 	public static function login($username,$password,$cookie_remember=true){
 		$us = Database::select('users','username',$username);
 		if(!$us) return [
 			'logged'=>false,
-			'message'=>'User not exist.'
+			'message'=>'User does not exist.'
 		];
 		$us=$us[0];
-		if($us['password']===sha1($password)){
-			if($cookie_remember) setrawcookie('m_token',$us['token'],time()+2678400,"/");
+		if($us['password']==sha1($password)){
+			if($cookie_remember) setrawcookie('m_token',$us['token'],time()+31536000,"/");
 			return [
 				'logged'=>true,
 				'message'=>'Signed in successful!'
@@ -102,7 +62,7 @@ class User{
 			'message'=>'Username only allowed characters,number and - and length between 4 and 16.'
 		];
 		Database::insert('users',[
-			'userid'=>generate_guid(),
+			//'userid'=>generate_guid(),
 			'username'=>$username,
 			'password'=>sha1($password),
 			'vip'=>false,
@@ -139,21 +99,25 @@ class Post{
 			'created'=>false,
 			'message'=>'Title and content cannot be empty!'
 		];
-		if(count($title)>60) return [
+		if(strlen($title)>60) return [
 			'created'=>false,
 			'message'=>'Maximun of title is 60 characters.'
 		];
 		$post = Database::insert('posts',[
-			'postid'=>generate_guid(),
-			'title'=>$title,
-			'content'=>$content,
+			'postid'=>Database::select('sqlite_sequence','name','posts')[0]['seq']+1,//To prevent bugs, I have to do this!
+			'title'=>SQLite3::escapeString($title),
+			'content'=>SQLite3::escapeString($content),
 			'user'=>User::logged()['userid'],
 			'sticky'=>false,
 			'datetime'=>time(),
 			'views'=>0,
-			'likes'=>[],
+			'likes'=>'[]',
 			'replies'=>0
 		]);
+		if(!$post) return [
+			'created'=>false,
+			'message'=>'Internal server error!'
+		];
 		return [
 			'created'=>true,
 			'message'=>'Created!',
@@ -174,22 +138,38 @@ class Post{
 			'replied'=>false,
 			'message'=>'Post not exists!'
 		];
-		$rawpost = Database::select('posts','postid',$post)[0];
-		$rawpost['replies']++;
-		Database::update('posts',Database::select('posts','postid',$rawpost['postid'])[0],$rawpost);
-		$reply = Database::insert('replies',[
-			'replyid'=>generate_guid(),
+		//$rawpost = Database::select('posts','postid',$post)[0];
+		//Database::update('posts',Database::select('posts','postid',$rawpost['postid'])[0],$rawpost);
+		$rawpost = Database::query((new SQL)->select('*')->from('posts')->where('postid=',$post)->getSql());
+		Database::execute((new SQL)->update('posts')->set('replies',$rawpost['replies']+1)->where('postid=',$post)->getSql());
+		Database::execute(
+			$sql=(new SQL)->insert([[
+				'replyid'=>Database::select('sqlite_sequence','name','replies')[0]['seq']+1,
+				'post'=>$post,
+				'content'=>SQLite3::escapeString($content),
+				'user'=>User::logged()['userid'],
+				'datetime'=>time(),
+				'likes'=>'[]',
+				'floor'=>$rawpost['replies']+2,
+				'repliedTo'=>$replied_to?SQLite3::escapeString(json_encode([
+					'user'=>$replied_to['user'],
+					'floor'=>$replied_to['floor']
+				])):null
+			]])->into('replies')->getSql()
+		);
+		$reply = [
+			'replyid'=>Database::select('sqlite_sequence','name','replies')[0]['seq'],
 			'post'=>$post,
-			'content'=>$content,
+			'content'=>SQLite3::escapeString($content),
 			'user'=>User::logged()['userid'],
 			'datetime'=>time(),
-			'likes'=>[],
-			'floor'=>$rawpost['replies']+1,
-			'repliedTo'=>$replied_to?[
+			'likes'=>'[]',
+			'floor'=>$rawpost['replies']+2,
+			'repliedTo'=>$replied_to?SQLite3::escapeString(json_encode([
 				'user'=>$replied_to['user'],
 				'floor'=>$replied_to['floor']
-			]:null
-		]);
+			])):null
+		];
 		if($replied_to){
 			$r_user = Database::select('users','userid',$replied_to['user']);
 			$r_user = $r_user?$r_user[0]:[
@@ -199,13 +179,13 @@ class Post{
 				'gender'=>'other'
 			];
 		}else $r_user=null;
-		$markdown = new Parsedown();
+		$markdown = new HyperDown\Parser;
 		return [
 			'replied'=>true,
 			'message'=>'Replied!',
 			'replied_to'=>$r_user,
 			'reply_floor'=>$reply['floor'],
-			'marked_content'=>$markdown->text($reply['content']),
+			'marked_content'=>$markdown->makeHtml($reply['content']),
 			'reply'=>$reply['replyid']
 		];
 	}
@@ -222,38 +202,41 @@ class Post{
 		$liked=false;
 		switch(strtolower($type)){
 			case "post":
-				$post = Database::select('posts','postid',$id);
+				$post = Database::query((new SQL)->select('*')->from('posts')->where('postid=',$id)->getSql());
 				if(!$post) return [
 					'liked'=>false,
 					'message'=>'Post does not exist!'
 				];
-				$post = $post[0];
-				if(array_search($u['userid'],$post['likes'])===false){
-					array_push($post['likes'],$u['userid']);
+				$likes = json_decode($post['likes'],true);
+				if(array_search($u['userid'],$likes)===false){
+					array_push($likes,$u['userid']);
 					$liked=true;
-				}else foreach($post['likes'] as $k=>$v) if($v==$u['userid']) array_splice($post['likes'],$k,1);
-				Database::update('posts',Database::select('posts','postid',$id),$post);
+				}else foreach($likes as $k=>$v) if($v==$u['userid']) array_splice($likes,$k,1);
+				Database::execute((new SQL)->update('posts')->where('postid=',$id)->set('likes',json_encode($likes))->getSql());
 				return [
 					'liked'=>true,
 					'message'=>$liked?'Liked!':'Unliked!',
-					'nowStatus'=>$liked
+					'currentStatus'=>$liked
 				];
 			case "reply":
-				$reply = Database::select('replies','replyid',$id);
+				$reply = Database::query((new SQL)->select('*')->from('replies')->where('replyid=',$id)->getSql());
 				if(!$reply) return [
 					'liked'=>false,
 					'message'=>'Reply does not exist!'
 				];
-				$reply = $reply[0];
-				if(array_search($u['userid'],$reply['likes'])===false){
-					array_push($reply['likes'],$u['userid']);
-					$liked=true;
-				}else foreach($reply['likes'] as $k=>$v) if($v==$u['userid']) array_splice($reply['likes'],$k,1);
-				Database::update('replies',Database::select('replies','replyid',$id),$reply);
+				$likes = json_decode($reply['likes'],true);
+				if(array_search($u['userid'],$likes)===false){
+					array_push($likes,$u['userid']);
+					$liked = true;
+				}else 
+					foreach($likes as $k=>$v) if($v==$u['userid']) array_splice($likes,$k,1);
+				Database::execute(
+					(new SQL)->update('replies')->where('replyid=',$id)->set('likes',json_encode($likes))->getSql()
+				);
 				return [
 					'liked'=>true,
 					'message'=>$liked?'Liked!':'Unliked!',
-					'nowStatus'=>$liked
+					'currentStatus'=>$liked
 				];
 				break;
 			default:

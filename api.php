@@ -1,10 +1,11 @@
 <?php
-/*APIs of the fourm*/
+/*Opened APIs of the fourm.*/
 require "intialize.php";
-function auto_header($state,$content_type){
-	/*Set based headers automatically.*/
-	$status = [
+function api_puts($status=0,$message,$data=null,$continue_processing=false){
+	/*Return formated JSON automatically.*/
+	$status_list = [
 		/*Status list*/
+		0 => "HTTP/1.1 0 Undefined",
 		100 => "HTTP/1.1 100 Continue",
 		101 => "HTTP/1.1 101 Switching Protocols",
 		200 => "HTTP/1.1 200 OK",
@@ -46,189 +47,97 @@ function auto_header($state,$content_type){
 		504 => "HTTP/1.1 504 Gateway Time-out"
 	];
 	/*Set the headers.*/
-	header($status[$state]);
-	header("Content-type:".$content_type);
+	header($status_list[$status]);
+	header("Content-type: application/json");
+	echo json_encode([
+		'status'=>$status,
+		'message'=>$message,
+		'data'=>$data
+	],JSON_PRETTY_PRINT);//Optimize JSON appearence
+	if(!$continue_processing) exit();//exit==die
+	return true;
 }
 $_POST = json_decode(file_get_contents("php://input"),true);
 if(empty($_GET['thing'])){
-	/*Default return*/
-	auto_header(406,"application/json");
-	die(json_encode([
-		'status'=>406,
-		'message'=>'You must enter enough information!'
-	],JSON_PRETTY_PRINT));
+	/**
+	 * I wanted to change the attribute 'thing' to 'operation',
+	 * but I'm lazy to change JavaScript file, sorry.
+	 */
+	api_puts(406,'Operation is undefined!');
 }else switch(strtolower($_GET['thing'])){
 	case 'signin':
 		/*Log in*/
-		if(empty($_POST['username'])||empty($_POST['password'])){
-			auto_header(406,"application/json");
-			die(json_encode([
-				'status'=>406,
-				'message'=>'Username and password cannot be empty!'
-			],JSON_PRETTY_PRINT));
-		}else{
-			if(($logged = User::login($_POST['username'],$_POST['password'],true))['logged']){
-				auto_header(200,"application/json");
-				die(json_encode([
-					'status'=>200,
-					'message'=>$logged['message']
-				],JSON_PRETTY_PRINT));
-			}else{
-				auto_header(401,"application/json");
-				die(json_encode([
-					'status'=>401,
-					'message'=>$logged['message']
-				],JSON_PRETTY_PRINT));
-			}
-		}
+		if(empty($_POST['username'])||empty($_POST['password']))
+			api_puts(406,'Username or password are empty!');
+		else if(($logged = User::login($_POST['username'],$_POST['password'],true))['logged'])
+			api_puts(200,$logged['message']);
+		else
+			api_puts(401,$logged['message']);
 		break;
 	case 'signup':
 		/*Register a new account*/
-		if(User::logged()){
-			auto_header(403,"application/json");
-			die(json_encode([
-				'status'=>403,
-				'message'=>'You are already signed in!'
-			],JSON_PRETTY_PRINT));
-		}
-		if(empty($_POST['username'])||empty($_POST['password'])||empty($_POST['gender'])){
-			auto_header(406,"application/json");
-			die(json_encode([
-				'status'=>406,
-				'message'=>'Username, password and gender cannot be empty!'
-			],JSON_PRETTY_PRINT));
-		}else{
-			if(($registered = User::register($_POST['username'],$_POST['password'],$_POST['gender']))['registered']){
+		if(User::logged()) api_puts(403,'You\'ve already signed in!');
+		if(empty($_POST['username'])||empty($_POST['password'])||empty($_POST['gender']))
+			api_puts(406,'Username, password or gender are empty!');
+		else if(($registered = User::register($_POST['username'],$_POST['password'],$_POST['gender']))['registered']){
 				User::login($_POST['username'],$_POST['password'],true);
-				auto_header(201,"application/json");
-				die(json_encode([
-					'status'=>201,
-					'message'=>$registered['message']
-				],JSON_PRETTY_PRINT));
-			}else{
-				auto_header(406,"application/json");
-				die(json_encode([
-					'status'=>406,
-					'message'=>$registered['message']
-				],JSON_PRETTY_PRINT));
-			}
-		}
+				api_puts(201,$registered['message']);
+			}else
+				api_puts(406,$registered['message']);
 		break;
 	case 'signout':
-		if(!User::logged()){
-			auto_header(401,"application/json");
-			die(json_encode([
-				'status'=>401,
-				'message'=>'You are not signed in!'
-			],JSON_PRETTY_PRINT));
-		}else{
-			auto_header(200,"application/json");
-			die(json_encode([
-				'status'=>200,
-				'message'=>User::logout()['message']
-			],JSON_PRETTY_PRINT));
-		}
+		if(!User::logged())
+			api_puts(401,'You are not signed in!');
+		else
+			api_puts(200,User::logout()['message']);
 		break;
 	case 'post':
-		if(!User::logged()){
-			auto_header(401,"application/json");
-			die(json_encode([
-				'status'=>401,
-				'message'=>'You are not signed in!'
-			],JSON_PRETTY_PRINT));
-		}else if(empty($_POST['title'])||empty($_POST['content'])){
-			auto_header(406,"application/json");
-			die(json_encode([
-				'status'=>406,
-				'message'=>'Title and content cannot be empty!'
-			],JSON_PRETTY_PRINT));
-		}else{
-			if(($created = Post::create($_POST['title'],$_POST['content']))['created']){
-				auto_header(201,"application/json");
-				die(json_encode([
-					'status'=>201,
-					'message'=>$created['message'],
-					'post'=>$created['id']
-				],JSON_PRETTY_PRINT));
-			}else{
-				auto_header(406,"application/json");
-				die(json_encode([
-					'status'=>406,
-					'message'=>$created['message']
-				],JSON_PRETTY_PRINT));
-			}
-		}
+		if(!User::logged())
+			api_puts(401,'You\'re not signed in!');
+		else if(empty($_POST['title'])||empty($_POST['content']))
+			api_puts(401,'Title or content are empty!');
+		else if(($created = Post::create($_POST['title'],$_POST['content']))['created'])
+			api_puts(201,$created['message'],[
+				'post'=>$created['id']
+			]);
+		else
+			api_puts(406,$created['message']);
 		break;
 	case 'reply':
-		if(!User::logged()){
-			auto_header(401,"application/json");
-			die(json_encode([
-				'status'=>401,
-				'message'=>'You are not signed in!'
-			],JSON_PRETTY_PRINT));
-		}else if(empty($_POST['content'])||empty($_POST['post'])){
-			auto_header(406,"application/json");
-			die(json_encode([
-				'status'=>406,
-				'message'=>'Content, post-id and replied-to options cannot be empty!'
-			],JSON_PRETTY_PRINT));
-		}else if(($replied = Post::reply($_POST["post"],$_POST["content"],$_POST["repliedto"]?$_POST['repliedto']:null))['replied']){
-			auto_header(201,"application/json");
-			die(json_encode([
-				'status'=>201,
-				'message'=>'Replied!',
+		if(!User::logged())
+			api_puts(401,"You're not signed in!");
+		else if(empty($_POST['content'])||empty($_POST['post']))
+			api_puts(406,"Contents and Post ID are requried!");
+		else if(($replied = Post::reply($_POST["post"],$_POST["content"],$_POST["repliedto"]?$_POST['repliedto']:null))['replied'])
+			api_puts(201,'Replied!',[
 				'repliedTo'=>$replied['replied_to'],
 				'floor'=>$replied['reply_floor'],
 				'content'=>$replied['marked_content'],
 				'id'=>$_POST['post']
-			],JSON_PRETTY_PRINT));
-		}else{
-			auto_header(406,"application/json");
-			die(json_encode([
-				'status'=>406,
-				'message'=>$replied['message']
-			],JSON_PRETTY_PRINT));
-		}
+			]);
+		else
+			api_puts(406,$replied['message']);
 		break;
 	case 'like':
 		/*Like/Unlike a post/reply.*/
-		if(!User::logged()){
-			auto_header(401,"application/json");
-			die(json_encode([
-				'status'=>401,
-				'message'=>'You are not signed in!'
-			],JSON_PRETTY_PRINT));
-		}else if(empty($_POST['type'])||empty($_POST['id'])){
-			auto_header(406,"application/json");
-			die(json_encode([
-				'status'=>406,
-				'message'=>'ID and like-type options cannot be empty!'
-			],JSON_PRETTY_PRINT));
-		}else if(($liked = Post::like($_POST['type'],$_POST['id']))){
-			auto_header(200,"application/json");
-			die(json_encode([
-				'status'=>200,
-				'message'=>$liked['message'],
-				'liked'=>$liked['nowStatus'],
-				'fullStr'=>isset($_POST['fullStr'])?$_POST['fullStr']:'{}'
-			],JSON_PRETTY_PRINT));
-		}else{
-			auto_header(406,"application/json");
-			die(json_encode([
-				'status'=>406,
-				'message'=>$liked['message']
-			],JSON_PRETTY_PRINT));
-		}
+		if(!User::logged())
+			api_puts(401,'You are not signed in!');
+		else if(empty($_POST['type'])||empty($_POST['id']))
+			api_puts(406,'Type and ID are required!');
+		else if(($liked = Post::like($_POST['type'],$_POST['id'])))
+			api_puts(200,$liked['message'],[
+				'liked'=>$liked['currentStatus'],
+				'fullString'=>isset($_POST['fullStr'])?$_POST['fullStr']:'{}'
+			]);
+		else
+			api_puts(406,$liked['message']);
 		break;
 	case 'info-modify':
 		/*Coming in future: user information edit.*/
+		api_puts(503,"Operation is not supported!");
 		break;
 	default:
 		/*If user did unsupported action.*/
-		auto_header(406,"application/json");
-		die(json_encode([
-			'status'=>406,
-			'message'=>'Your operation is unsupported!'
-		],JSON_PRETTY_PRINT));
+		api_puts(404,"Operation not found!");
 		break;
 }

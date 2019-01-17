@@ -11,7 +11,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="stylesheet" href="stylesheet.css"/>
-		<title>Not Found - <?php echo $config["sitename"];?></title>
+		<title>Not Found - <?php echo Property::$properties["forum"]['name'];?></title>
 	</head>
 	<body>
 		<div class="central-card box-shadow">
@@ -41,7 +41,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="stylesheet" href="stylesheet.css"/>
-		<title><?php echo $user['username'];?> - <?php echo $config["sitename"];?></title>
+		<title><?php echo $user['username'];?> - <?php echo Property::$properties["forum"]['name'];?></title>
 	</head>
 	<body>
 		<?php require "nav.php"; ?>
@@ -60,7 +60,7 @@
 							echo 'Other';
 							break;
 						default:
-							echo 'Error loading on gender';
+							echo 'Error loading gender';
 							break;
 					}?>, <?php echo ((string)count($posts))." post".(count($posts)>1?'s':'');?>, <?php echo ((string)count($replies))." repl".(count($replies)>1?'ies':'y'); ?>, joined at <?php echo date('H:i',$user['registered']); ?> on <?php echo date('M d',$user['registered']); ?> in <?php echo date('Y',$user['registered']); ?>.</div>
 				</div>

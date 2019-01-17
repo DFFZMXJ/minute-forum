@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" /><!--Adapat Mobile UI.-->
+        <title>Setup - 5 Minute Forum</title>
+    </head>
+    <body>
+        <!--
+            <?php if(isset($__SETUP_ERROR__)) echo "--"."><strong>Setup Error:</strong> $__SETUP_ERROR__<!"."--"; ?>
+        -->
+        <p>
+            5 Minute Forum is a modern forum. Before using, you must set it up.
+        </p>
+        <form action="#" method="GET">
+            <p>Please provide these information to install. If you want to set it up manually, please read the comments of setup.php.</p>
+            <input type="hidden" name="safelock" value="unlocked"/><!--Unlock.-->
+            <div>
+                Forum Name: <input type="text" name="forumname" value="5 Minute Forum" />
+            </div>
+            <div>
+                Database Storage Location: <input type="text" name="database" value="storage/<?php echo mt_rand();?>.db" placeholder="storage/database.db" />
+            </div>
+            <hr />
+            <div>
+                Username: <input type="text" name="username" value="admin" />
+            </div>
+            <div>
+                Password: <input type="password" name="password" value="" />
+            </div>
+            <div>
+                Gender:
+                <label>
+                    <input type="radio" name="gender" value="male" />
+                    Male
+                </label>
+                <label>
+                    <input type="radio" name="gender" value="female" checked />
+                    Female
+                </label>
+                <label>
+                    <input type="radio" name="gender" value="other" />
+                    Other
+                </label>
+            </div>
+            <button type="submit">Setup</button>
+        </form>
+    </body>
+</html>

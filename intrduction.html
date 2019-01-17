@@ -1,92 +1,104 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="UTF-8"/>
-		<meta name="viewport" content="width=device-width" />
-		<title>欢迎</title>
-		<style>
-			body{
-				background:#f1f1f1;
-			}
-			article{
-				background:white;
-				border-radius:2px;
-				width:80vw;
-				position:absolute;
-				left:50%;
-				top:5vh;
-				margin-bottom:10vh;
-				transform:translate(-50%,0);
-				padding:20px;
-				margin:0;
-				font-family:"Google Product Sans","Product Sans",Roboto,sans-serif;
-				box-shadow:0 0 4px grey ;
-			}
-			article section:first-child{
-				background:rgba(256,0,0,.3);
-				border:1px solid red;
-				padding:5px;
-			}
-		</style>
-	</head>
-	<body>
-		<article>
-			<section>
-				<h2>我本来有一个大胆的想法</h2>
-				<p>
-					我想录制制作过程传到B站<del>（达成成就<strong>“在B站看别人写代码”</strong>）</del>，因为我也想出道UP主，涨一涨粉（如此厚颜无耻）。但是……录屏时忘记更改输出目录，把C盘撑满了，<del>卧靠，</del>连Pr都装不下（没有空间缓存解压后的压缩包），只好删掉录好的视频，放弃这个大胆的想法。
-				</p>
-				<p>
-					不过论坛软件还好好的活在这里，不是吗？而且我打算换个思路做视频传到B站。（住口，无耻老贼！）
-				</p>
-			</section>
-			<h1>欢迎使用5 Minute Forum</h1>
-			<p>本人<del>视频</del>（硬盘存储空间放不下视频，被迫放弃）打算在数小时（待定，其实用了1周）内做出一个简单的论坛，该论坛将实现以下功能：</p>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>欢迎</title>
+	<style>
+		body {
+			background: #f1f1f1;
+		}
+
+		article {
+			background: white;
+			border-radius: 2px;
+			width: 80vw;
+			position: absolute;
+			left: 50%;
+			top: 5vh;
+			margin-bottom: 10vh;
+			transform: translate(-50%, 0);
+			padding: 20px;
+			margin: 0;
+			font-family: "Google Product Sans", "Product Sans", Roboto, sans-serif;
+			box-shadow: 0 0 4px grey;
+		}
+
+		article section:first-child {
+			background: rgba(256, 0, 0, .3);
+			border: 1px solid red;
+			padding: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<article>
+		<section>
+			<h2>我本来有一个大胆的想法</h2>
+			<p>
+				我想录制制作过程传到B站<del>（达成成就<strong>“在B站看别人写代码”</strong>）</del>，因为我也想出道UP主，涨一涨粉（如此厚颜无耻）。但是……录屏时忘记更改输出目录，把C盘撑满了，<del>卧靠，</del>连Pr都装不下（没有空间缓存解压后的压缩包），只好删掉录好的视频，放弃这个大胆的想法。
+			</p>
+			<p>
+				不过论坛软件还好好的活在这里，不是吗？而且我打算换个思路做视频传到B站。（住口，无耻老贼！）
+			</p>
+			<p>
+				英文文档会持续更新，目前本人是初一生，英语能力有限（第一次考试满分 <del>停止你的拉仇恨行为！</del>），待本人能力提升后，会对文档进行更新。
+			</p>
+		</section>
+		<p>
+			改代码真是累趴我了！所以不要轻易改自己写的代码！
+		</p>
+		<h1>欢迎使用5 Minute Forum</h1>
+		<p>本人<del>视频</del>（硬盘存储空间放不下视频，被迫放弃）打算在数小时（待定，其实用了1周）内做出一个简单的论坛，该论坛将实现以下功能：</p>
+		<ol>
+			<li>登录、注册</li>
+			<li>发帖、评论</li>
+			<li>点赞、回复评论</li>
+			<li>Markdown</li>
+			<li>置顶（通过编辑数据库）</li>
+			<li>响应式界面</li>
+			<li>SQLite</li>
+			<li>VIP用户（通过编辑数据库）</li>
+		</ol>
+		<del>因为切换输入法麻烦，之后的内容会尽量使用英语。</del> 不录视频了，不用考虑麻烦，源代码依然保持英文，这里提供翻译。
+		<section>
+			<h2>为何要制作本论坛</h2>
 			<ol>
-				<li>基本登录、注册</li>
-				<li>基本发帖、回复</li>
-				<li>记录点赞量、阅读量（无法直接获取点赞量）</li>
-				<li>允许用Markdown语法对帖子排版</li>
-				<li>置顶<del>、加精</del>帖子（通过编辑数据库）</li>
-				<li>通过响应式界面兼容移动端</li>
-				<li>使用JSON对数据进行存储</li>
-				<li>将用户设置为VIP（通过编辑数据库）</li>
+				<li>展示我技术多么“666”（简称装X）<del>（我从未见过有如此厚颜无耻之人）</del></li>
+				<li>用逻辑简单的代码告诉你们一个论坛的结构。</li>
+				<li>让别人进行简单修改使其变得更好<del>（改改还能用）</del></li>
+				<li>练习技术，确保在制作<a href="https://github.com/dffzmxj/hi-buluo">Hi社</a>时不会不知所措<del>，被水淹没</del></li>
 			</ol>
-			<del>因为切换输入法麻烦，之后的内容会尽量使用英语。</del> 不录视频了，不用考虑麻烦，源代码依然保持英文，这里提供翻译。
-			<section>
-				<h2>为何要制作本论坛</h2>
-				<ol>
-					<li>展示我技术多么“666”<del>（我从未见过有如此厚颜无耻之人）</del></li>
-					<li>用逻辑简单的代码告诉你们一个论坛的结构。</li>
-					<li>让别人进行简单修改使其变得更好<del>（改改还能用）</del></li>
-					<li>练习技术，确保在制作<a href="https://github.com/dffzmxj/hi-buluo">Hi社</a>时不会不知所措<del>，被水淹没</del></li>
-				</ol>
-			</section>
-			<section>
-				<h2>论坛技术详细</h2>
-				文笔不好，弃坑。
-			</section>
-			<section>
-				<h2>食用教程</h2>
-				<ol>
-					<li>克隆/下载本库并解压到要安装的目录。</li>
-					<li>访问<code>https://域名/目录/install.php</code></li>
-					<li>大吉大利，今晚吃鸡！</li>
-				</ol>
-			</section>
-			<section>
-				<h2>实话实说，我并不建议你直接使用本论坛</h2>
-				<ul>
-					<li>如果大量发帖，可能会导致JSON损坏而出现奇♂怪的错误</li>
-					<li>没有管理员界面，你无法更直观的管理论坛</li>
-					<li>不支持分页，帖子过多可能会导致浏览器和服务器崩溃</li>
-					<li>没有XSS代码过滤器等安全措施，用户可能盗取其它用户token或插♂入奇♂怪的数据</li>
-				</ul>
-			</section>
-			<section>
-				<h2>查我的水表</h2>
-				<p>加我QQ<code>2477819731</code>或者在<a href="https://forum.dffzmxj.tk">我的论坛</a>发帖。</p>
-			</section>
-		</article>
-	</body>
+		</section>
+		<section>
+			<h2>论坛技术详细</h2>
+			<a href="https://blogs.dffzmxj.com/archives/5">已经写好了，去看吧。</a>
+		</section>
+		<section>
+			<h2>食用教程</h2>
+			<ol>
+				<li>克隆/下载本库并解压到要安装的目录。</li>
+				<li>访问<code>https://域名/目录/install.php</code></li>
+				<li>大吉大利，今晚吃鸡！</li>
+			</ol>
+		</section>
+		<section>
+			<h2>实话实说，我并不建议你直接使用本论坛</h2>
+			<ul>
+				<li>大量用户发帖可能会出现奇♂怪的错误</li>
+				<li><del>没有管理员界面，你无法更直观的管理论坛</del> 打算用console界面做管理员界面</li>
+				<li>不支持分页，帖子过多可能会导致浏览器和服务器崩溃</li>
+				<li>没有XSS代码过滤器等安全措施，用户可能盗取其它用户token或插入奇怪的数据</li>
+			</ul>
+		</section>
+		<section>
+			<h2>查水表</h2>
+			<p>加QQ <code>2477819731</code> 或者在<a href="https://forum.dffzmxj.com">我的论坛</a>发帖。</p>
+			<p>顺便小声说下为什么有人会说我这里厚颜无耻？</p>
+		</section>
+	</article>
+</body>
+
 </html>
