@@ -57,7 +57,7 @@ class User{
 			'registered'=>false,
 			'message'=>'User already exists!'
 		];
-		if(!preg_match("/^[a-zA-Z_-]{2,16}$/ig")) return [
+		if(!preg_match("/^[a-zA-Z_-]{2,16}$/i",$username)) return [
 			'registered'=>false,
 			'message'=>'Username only allowed characters,number and - and length between 4 and 16.'
 		];
@@ -72,7 +72,7 @@ class User{
 		]);
 		return [
 			'registered'=>true,
-			'message'=>'Signed up successful!'
+			'message'=>'Signed up successfully!'
 		];
 	}
 	public static function logout(){
